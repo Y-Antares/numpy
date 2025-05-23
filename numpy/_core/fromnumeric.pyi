@@ -41,6 +41,7 @@ from numpy._typing import (
     ArrayLike,
     DTypeLike,
     NDArray,
+    _AnyShape,
     _ArrayLike,
     _ArrayLikeBool_co,
     _ArrayLikeComplex_co,
@@ -111,6 +112,7 @@ _NumberOrObjectT = TypeVar("_NumberOrObjectT", bound=np.number | np.object_)
 _ArrayT = TypeVar("_ArrayT", bound=np.ndarray[Any, Any])
 _ShapeT = TypeVar("_ShapeT", bound=tuple[int, ...])
 _ShapeT_co = TypeVar("_ShapeT_co", bound=tuple[int, ...], covariant=True)
+_BoolOrIntArrayT = TypeVar("_BoolOrIntArrayT", bound=NDArray[np.integer | np.bool])
 
 @type_check_only
 class _SupportsShape(Protocol[_ShapeT_co]):
@@ -418,18 +420,18 @@ def argmax(
 def argmax(
     a: ArrayLike,
     axis: SupportsIndex | None,
-    out: _ArrayT,
+    out: _BoolOrIntArrayT,
     *,
     keepdims: bool = ...,
-) -> _ArrayT: ...
+) -> _BoolOrIntArrayT: ...
 @overload
 def argmax(
     a: ArrayLike,
     axis: SupportsIndex | None = ...,
     *,
-    out: _ArrayT,
+    out: _BoolOrIntArrayT,
     keepdims: bool = ...,
-) -> _ArrayT: ...
+) -> _BoolOrIntArrayT: ...
 
 @overload
 def argmin(
@@ -451,18 +453,18 @@ def argmin(
 def argmin(
     a: ArrayLike,
     axis: SupportsIndex | None,
-    out: _ArrayT,
+    out: _BoolOrIntArrayT,
     *,
     keepdims: bool = ...,
-) -> _ArrayT: ...
+) -> _BoolOrIntArrayT: ...
 @overload
 def argmin(
     a: ArrayLike,
     axis: SupportsIndex | None = ...,
     *,
-    out: _ArrayT,
+    out: _BoolOrIntArrayT,
     keepdims: bool = ...,
-) -> _ArrayT: ...
+) -> _BoolOrIntArrayT: ...
 
 @overload
 def searchsorted(
@@ -579,7 +581,7 @@ def nonzero(a: _ArrayLike[Any]) -> tuple[NDArray[intp], ...]: ...
 
 # this prevents `Any` from being returned with Pyright
 @overload
-def shape(a: _SupportsShape[Never]) -> tuple[int, ...]: ...
+def shape(a: _SupportsShape[Never]) -> _AnyShape: ...
 @overload
 def shape(a: _SupportsShape[_ShapeT]) -> _ShapeT: ...
 @overload
@@ -594,7 +596,7 @@ def shape(a: _PyArray[_PyArray[_PyScalar]]) -> tuple[int, int]: ...
 @overload
 def shape(a: memoryview | bytearray) -> tuple[int]: ...
 @overload
-def shape(a: ArrayLike) -> tuple[int, ...]: ...
+def shape(a: ArrayLike) -> _AnyShape: ...
 
 @overload
 def compress(
